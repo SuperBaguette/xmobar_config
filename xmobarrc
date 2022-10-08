@@ -1,0 +1,66 @@
+Config { font = "xft:RobotoMono Nerd Font:style=Regular:size=10:antialias=true:hinting=true"
+       , additionalFonts = ["xft:JoyPixels:style=Regular:size=10:antialias=true:hinting=true"]
+       , borderColor = "black"
+       , border = TopB
+       , bgColor = "black"
+       , fgColor = "grey"
+       , alpha = 255
+       , position = TopP 0 168
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , pickBroadest = False
+       , persistent = False
+       , hideOnStart = False
+       , iconRoot = "."
+       , allDesktops = True
+       , overrideRedirect = True
+       , commands = [ Run WeatherX "LFPV"
+                             [ ("clear", "☀")
+                             , ("sunny", "☀")
+                             , ("mostly clear", "🌤")
+                             , ("mostly sunny", "🌤")
+                             , ("partly sunny", "⛅")
+                             , ("fair", "🌥")
+                             , ("cloudy","☁")
+                             , ("overcast","☁")
+                             , ("partly cloudy", "🌥")
+                             , ("mostly cloudy", "☁")
+                             , ("considerable cloudiness", "☁")
+                             , ("rain", "🌧")
+                             , ("snow", "🌨")
+                             , ("thunder", "⛈")]
+                             ["-t", "<fn=1><skyConditionS></fn> <tempC>°C <rh>% <windKmh>km/h"
+                             , "-L","10", "-H", "25", "--normal", "grey"
+                             , "--high", "lightgoldenrod4", "--low", "darkseagreen4"]
+                             18000
+                    , Run Cpu ["-t", " <total>%","-L","3","-H","50",
+                               "--normal","green","--high","red"] 10
+                    , Run CoreTemp ["-t", "<fn=1>🌡</fn><core0>-<core1>-<core2>-<core3>-<core4>-<core5> °C",
+                                    "-L", "40", "-H", "60",
+                                    "-l", "lightblue", "-n", "gray90", "-h", "red"] 50
+                    , Run Memory ["-t"," <usedratio>%"] 10
+                    , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
+                    , Run Battery        [ "--template" , "<acstatus>"
+                             , "--Low"      , "10"        -- units: %
+                             , "--High"     , "80"        -- units: %
+                             , "--low"      , "red"
+                             , "--normal"   , "orange"
+                             , "--high"     , "green"
+
+                             , "--" -- battery specific options
+                                       -- discharging status
+                                       , "-o"   , "<fn=1>🔋</fn> <left>% (<timeleft>) <fn=1>↘</fn>"
+                                       -- AC "on" status
+                                       , "-O"   , "<fn=1>🔋</fn> <left>% <fn=1>↗</fn>"
+                                       -- charged status
+                                       , "-i"   , "<fn=1>🔋</fn> <left>% <fn=1>☑</fn>"
+                             ] 50
+                    , Run DynNetwork ["-t", "<fn=1>🔽</fn> <rx> <fn=1>🔼</fn> <tx>", "-S", "True"] 50
+                    , Run CommandReader "/home/nicolas/.config/xmobar/light.sh"  "light" 
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%cpu% | %coretemp% | %memory% | %dynnetwork%
+                    }{<fc=#ee9a00>%date%</fc> | %LFPV% | %battery% | <fn=1>💡</fn> %light% |"
+       }
